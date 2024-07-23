@@ -1,4 +1,4 @@
-package dev.hamster.newfullstack.controles;
+package dev.hamster.newfullstack.controller;
 
 import dev.hamster.newfullstack.entidades.Endereco;
 import dev.hamster.newfullstack.servico.EnderecoServico;
@@ -8,37 +8,31 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/enderecos")
-public class EnderecoControle {
+@RequestMapping("enderecos")
+public class EnderecoController {
 
-    @Autowired
-    private EnderecoServico enderecoServico;
 
+    @Autowired private EnderecoServico enderecoServico;
 
 
     @GetMapping()
-    public List<Endereco> listarTodos(){
+    public ResponseEntity<List<Endereco>> findAll(){
         return enderecoServico.buscarTodos();
     }
 
-    @GetMapping("/buscarPorNome")
-    public ResponseEntity<List<Endereco>> buscarPorRua(@RequestParam String termo) {
-        return enderecoServico.buscarPorRua(termo);
-    }
-
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<?> cadastrarEndereco(@RequestBody Endereco endereco){
         return enderecoServico.cadastrarEndereco(endereco);
     }
-
-    @PutMapping
+    
+    @PutMapping()
     public ResponseEntity<?> editarEndereco(@RequestBody Endereco endereco){
-        return enderecoServico.cadastrarEndereco(endereco);
+        return enderecoServico.editarEndereco(endereco);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> excluirTelefone(@PathVariable Long id){
-        return enderecoServico.excluir(id);
+    @DeleteMapping
+    public ResponseEntity<?> excluir(@RequestBody Endereco endereco){
+        Long id = endereco.getId();
+        return enderecoServico.remover(id);
     }
-
 }
