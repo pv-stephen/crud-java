@@ -30,9 +30,8 @@ public class TelefoneController {
         return telefoneServico.editarTelefone(telefone);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> excluir(@RequestBody Telefone telefone){
-        Long id = telefone.getId();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> excluir(@PathVariable Long id){
         return telefoneServico.remover(id);
     }
 }

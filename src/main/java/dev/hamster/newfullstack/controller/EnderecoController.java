@@ -30,9 +30,14 @@ public class EnderecoController {
         return enderecoServico.editarEndereco(endereco);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> excluir(@RequestBody Endereco endereco){
-        Long id = endereco.getId();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> excluir(@PathVariable Long id){
         return enderecoServico.remover(id);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> selecionarPeloId(@PathVariable Long id){
+        return enderecoServico.selecionarPeloCodigo(id);
+    }
+
 }

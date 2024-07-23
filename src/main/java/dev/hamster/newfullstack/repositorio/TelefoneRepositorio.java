@@ -16,4 +16,6 @@ public interface TelefoneRepositorio extends JpaRepository<Telefone, Long> {
 
     @Query("SELECT t from telefones t WHERE t.numero LIKE %:termo% ORDER BY t.numero ASC")
     List<Telefone> buscarPorNumero(String termo);
+
+    Long countById(Long id);
 }
