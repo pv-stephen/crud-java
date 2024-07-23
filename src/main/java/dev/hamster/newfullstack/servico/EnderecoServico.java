@@ -38,9 +38,13 @@ public class EnderecoServico {
         }if(obj.getBairro().isBlank() || obj.getBairro().isEmpty()){
             mensagem.setMensagem("O campo Bairro é obrigatório!");
             return new ResponseEntity<>(mensagem,HttpStatus.BAD_REQUEST);
-        }if(obj.getComplemento().isBlank() || obj.getComplemento().isEmpty()){
+        }if(obj.getComplemento().isBlank() || obj.getComplemento().isEmpty()) {
             mensagem.setMensagem("O campo Complemento é obrigatório!");
-            return new ResponseEntity<>(mensagem,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
+        }
+        if (obj.getCliente() == null) {
+            mensagem.setMensagem("Um Endereco deve obrigatoriamente ter um Cliente associado!");
+            return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
         } else return new ResponseEntity<>(enderecoRepositorio.save(obj), HttpStatus.CREATED);
     }
     public ResponseEntity<?> editarEndereco (Endereco obj){

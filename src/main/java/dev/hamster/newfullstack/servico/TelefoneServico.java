@@ -26,7 +26,9 @@ public class TelefoneServico {
         if(obj.getNumero().isBlank() || obj.getNumero().isEmpty()){
             mensagem.setMensagem("O Número é obrigatório!");
             return new ResponseEntity<>(mensagem,HttpStatus.BAD_REQUEST);
-        } else return new ResponseEntity<>(telefoneRepositorio.save(obj), HttpStatus.CREATED);
+        } if (obj.getCliente() == null) {
+            mensagem.setMensagem("Um telefone deve obrigatoriamente ter um Cliente associado!");
+        } return new ResponseEntity<>(telefoneRepositorio.save(obj), HttpStatus.CREATED);
     }
     public ResponseEntity<?> editarTelefone (Telefone obj){
         if(obj.getNumero().isBlank() || obj.getNumero().isEmpty()){
