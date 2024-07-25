@@ -3,6 +3,7 @@ package dev.hamster.newfullstack.servico;
 import dev.hamster.newfullstack.entidades.Endereco;
 import dev.hamster.newfullstack.entidades.excecao.Mensagem;
 import dev.hamster.newfullstack.repositorio.EnderecoRepositorio;
+import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,10 +43,17 @@ public class EnderecoServico {
             mensagem.setMensagem("O campo Complemento é obrigatório!");
             return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
         }
-        if (obj.getCliente() == null) {
-            mensagem.setMensagem("Um Endereco deve obrigatoriamente ter um Cliente associado!");
-            return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
-        } else return new ResponseEntity<>(enderecoRepositorio.save(obj), HttpStatus.CREATED);
+        try{
+            if (obj.getCliente() == null) {
+                mensagem.setMensagem("Um Endereco deve obrigatoriamente ter um Cliente associado!");
+                return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
+            }
+        }catch (TransientPropertyValueException transientPropertyValueException){
+            transientPropertyValueException.getMessage();
+        }
+
+        return new ResponseEntity<>(enderecoRepositorio.save(obj), HttpStatus.CREATED);
+
     }
     public ResponseEntity<?> editarEndereco (Endereco obj){
         if(obj.getRua().isBlank() || obj.getRua().isEmpty()){

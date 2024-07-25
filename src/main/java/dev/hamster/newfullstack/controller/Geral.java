@@ -5,6 +5,8 @@ import dev.hamster.newfullstack.entidades.Cliente;
 import dev.hamster.newfullstack.entidades.Endereco;
 import dev.hamster.newfullstack.entidades.Telefone;
 import dev.hamster.newfullstack.entidades.excecao.Mensagem;
+import dev.hamster.newfullstack.repositorio.ClienteRepositorio;
+import dev.hamster.newfullstack.repositorio.EnderecoRepositorio;
 import dev.hamster.newfullstack.servico.ClienteServico;
 import dev.hamster.newfullstack.servico.EnderecoServico;
 import dev.hamster.newfullstack.servico.TelefoneServico;
@@ -13,8 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/geral")
@@ -23,7 +27,13 @@ public class Geral {
     @Autowired
     private ClienteServico clienteServico;
     @Autowired
+    private ClienteRepositorio clienteRepositorio;
+
+    @Autowired
     private EnderecoServico enderecoServico;
+    @Autowired
+    private EnderecoRepositorio enderecoRepositorio;
+
     @Autowired
     private TelefoneServico telefoneServico;
     @Autowired
@@ -35,8 +45,11 @@ public class Geral {
         Cliente cliente = new Cliente();
 
         cliente.setNome(clienteDTO.getNome());
-        clienteServico.cadastrarCliente(cliente);
-
+        try {
+            clienteServico.cadastrarCliente(cliente);
+        } catch (Exception e){
+            e.getMessage();
+        }
         List<Endereco> enderecos = clienteDTO.getEnderecos().stream().map(dto -> {
             Endereco endereco = new Endereco();
             endereco.setRua(dto.getRua());
@@ -58,5 +71,24 @@ public class Geral {
         cliente.setEnderecos(enderecos);
         cliente.setTelefones(telefones);
         return ResponseEntity.status(HttpStatus.CREATED).body(cliente);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> pesquisar(@RequestParam String termo){
+        // verifica se o parametro nao está vazio:
+        if(termo.isBlank() || termo.isEmpty()){
+            return ResponseEntity.badRequest().body("O parametro de consulta não pode estar vazio");
+        }
+
+        // pesquisa cliente por nome:
+        List<Cliente> clientes = clienteRepositorio.buscarPorNome(termo);
+        // pesquisa enderecos por rua e bairro:
+        List<Endereco> enderecos = enderecoRepositorio.buscarPorRua(termo);
+
+        Set<List<?>> resultados = new LinkedHashSet<>();
+        resultados.add(clientes);
+        resultados.add(enderecos);
+        return ResponseEntity.ok().body(resultados);
+
     }
 }

@@ -12,9 +12,7 @@ import java.util.List;
 @RequestMapping("clientes")
 public class ClienteController {
 
-
     @Autowired private ClienteServico clienteServico;
-
 
     @GetMapping()
     public ResponseEntity<List<Cliente>> findAll(){

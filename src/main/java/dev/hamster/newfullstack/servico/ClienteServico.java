@@ -23,11 +23,13 @@ public class ClienteServico {
         return new ResponseEntity<>(clientes, HttpStatus.OK);
     }
 
+
     public ResponseEntity<?> cadastrarCliente(Cliente obj){
         if(obj.getNome().isBlank() || obj.getNome().isEmpty()){
             mensagem.setMensagem("O Nome do cliente é obrigatório!");
             return new ResponseEntity<>(mensagem,HttpStatus.BAD_REQUEST);
-        } else return new ResponseEntity<>(clienteRepositorio.save(obj), HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(clienteRepositorio.save(obj), HttpStatus.CREATED);
     }
     public ResponseEntity<?> editarCliente (Cliente obj){
         if(obj.getNome().isBlank() || obj.getNome().isEmpty()){
