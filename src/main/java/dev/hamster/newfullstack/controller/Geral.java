@@ -45,11 +45,8 @@ public class Geral {
         Cliente cliente = new Cliente();
 
         cliente.setNome(clienteDTO.getNome());
-        try {
-            clienteServico.cadastrarCliente(cliente);
-        } catch (Exception e){
-            e.getMessage();
-        }
+        clienteServico.cadastrarCliente(cliente);
+
         List<Endereco> enderecos = clienteDTO.getEnderecos().stream().map(dto -> {
             Endereco endereco = new Endereco();
             endereco.setRua(dto.getRua());

@@ -15,11 +15,11 @@ public class Itens {
     private Integer quantidade;
     private Double preco;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.PERSIST)
     @JoinTable(name = "categoria_item", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
     private Categoria categoria;
 
-    @ManyToOne()
+    @ManyToOne(cascade=CascadeType.PERSIST)
     @JoinColumn(name = "orcamento_id")
     private Orcamento orcamento;
 

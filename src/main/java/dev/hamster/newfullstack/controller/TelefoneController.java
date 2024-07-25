@@ -22,7 +22,7 @@ public class TelefoneController {
 
     @PostMapping()
     public ResponseEntity<?> cadastrarTelefone(@RequestBody Telefone telefone){
-        return telefoneServico.cadastrarTelefone(telefone);
+            return telefoneServico.cadastrarTelefone(telefone);
     }
     
     @PutMapping()

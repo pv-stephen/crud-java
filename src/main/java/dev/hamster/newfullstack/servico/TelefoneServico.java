@@ -26,14 +26,16 @@ public class TelefoneServico {
         if(obj.getNumero().isBlank() || obj.getNumero().isEmpty()){
             mensagem.setMensagem("O Número é obrigatório!");
             return new ResponseEntity<>(mensagem,HttpStatus.BAD_REQUEST);
-        } if (obj.getCliente() == null) {
+        }
+        if (obj.getCliente() == null) {
             mensagem.setMensagem("Um telefone deve obrigatoriamente ter um Cliente associado!");
         } return new ResponseEntity<>(telefoneRepositorio.save(obj), HttpStatus.CREATED);
     }
-    public ResponseEntity<?> editarTelefone (Telefone obj){
-        if(obj.getNumero().isBlank() || obj.getNumero().isEmpty()){
+
+    public ResponseEntity<?> editarTelefone(Telefone obj) {
+        if (obj.getNumero().isBlank() || obj.getNumero().isEmpty()) {
             mensagem.setMensagem("O Número é obrigatório!");
-            return new ResponseEntity<>(mensagem,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
         } else return new ResponseEntity<>(telefoneRepositorio.save(obj), HttpStatus.OK);
     }
 
@@ -42,7 +44,7 @@ public class TelefoneServico {
             mensagem.setMensagem("Telefone não encontrado");
             return new ResponseEntity<>(mensagem, HttpStatus.NOT_FOUND);
         } else telefoneRepositorio.deleteById(id);
-        mensagem.setMensagem("Endereço excluído com sucesso!");
+        mensagem.setMensagem("Telefone excluído com sucesso!");
         return new ResponseEntity<>(mensagem, HttpStatus.OK);
     }
 
