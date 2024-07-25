@@ -69,6 +69,9 @@ public class Orcamento implements Serializable {
         return itens;
     }
 
+    public void adicioanarItens(Itens item){
+        itens.add(item);
+    }
 
     // Métodos
     public Double getTotal(){

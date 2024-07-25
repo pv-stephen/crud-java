@@ -1,10 +1,8 @@
 package dev.hamster.newfullstack.entidades;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.jetbrains.annotations.NotNull;
-
 import java.io.Serializable;
 import java.util.*;
 
@@ -71,6 +69,18 @@ public class Cliente implements Serializable {
 
     public List<Orcamento> getOrcamentos() {
         return orcamentos;
+    }
+
+
+
+    public void adicionarTelefone(Telefone telefone) {
+        this.telefones.add(telefone);
+    }
+    public void adicionarEndereco(Endereco endereco) {
+        this.enderecos.add(endereco);
+    }
+    public void adicionarOrcamento(Orcamento orcamento) {
+        this.orcamentos.add(orcamento);
     }
 
     @Override

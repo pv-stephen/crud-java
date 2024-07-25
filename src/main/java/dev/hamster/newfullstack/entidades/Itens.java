@@ -16,7 +16,7 @@ public class Itens {
     private Double preco;
 
     @ManyToOne(cascade=CascadeType.PERSIST)
-    @JoinTable(name = "categoria_item", joinColumns = @JoinColumn(name = "item_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
+    @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
     @ManyToOne(cascade=CascadeType.PERSIST)
