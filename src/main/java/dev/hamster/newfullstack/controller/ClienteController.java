@@ -9,21 +9,29 @@ import dev.hamster.newfullstack.servico.TelefoneServico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("clientes")
+@CrossOrigin("*")
 public class ClienteController {
 
     @Autowired private ClienteServico clienteServico;
-
     @Autowired private TelefoneServico telefoneServico;
     @Autowired private EnderecoServico enderecoServico;
 
-    @GetMapping()
-    public ResponseEntity<List<Cliente>> findAll(){
-        return clienteServico.buscarTodos();
+//    @GetMapping()
+//    public ResponseEntity<List<Cliente>> findAll(){
+//        return clienteServico.buscarTodos();
+//    }
+    @GetMapping
+    public List<Cliente> todosClientesComAtributos() {
+        return clienteServico.clientesComAtributos();
+    }
+
+    @GetMapping("/{id}")
+    public Cliente buscarClientePorId(@PathVariable Long id) {
+        return clienteServico.buscarClienteComAtributos(id);
     }
 
     @PostMapping()
@@ -46,7 +54,7 @@ public class ClienteController {
         return ResponseEntity.ok(clienteAtualizado);
     }
 
-    @PutMapping()
+    @PutMapping("/{id}")
     public ResponseEntity<?> editarCliente(@RequestBody Cliente cliente){
         return clienteServico.editarCliente(cliente);
     }

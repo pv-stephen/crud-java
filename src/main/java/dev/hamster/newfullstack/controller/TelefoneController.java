@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("telefones")
+@CrossOrigin("*")
 public class TelefoneController {
 
 

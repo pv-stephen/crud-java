@@ -19,5 +19,4 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<String> clienteNaoEncontrado(EntityNotFoundException exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado!");
     }
-
 }

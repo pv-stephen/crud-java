@@ -1,10 +1,13 @@
 package dev.hamster.newfullstack.controller;
 
 import dev.hamster.newfullstack.dto.ClienteDTO;
+import dev.hamster.newfullstack.dto.EnderecoDTO;
+import dev.hamster.newfullstack.dto.TelefoneDTO;
 import dev.hamster.newfullstack.entidades.Cliente;
 import dev.hamster.newfullstack.entidades.Endereco;
 import dev.hamster.newfullstack.entidades.Telefone;
 import dev.hamster.newfullstack.entidades.excecao.Mensagem;
+import dev.hamster.newfullstack.entidades.excecao.ResourceNotFoundException;
 import dev.hamster.newfullstack.repositorio.ClienteRepositorio;
 import dev.hamster.newfullstack.repositorio.EnderecoRepositorio;
 import dev.hamster.newfullstack.servico.ClienteServico;
@@ -15,13 +18,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/geral")
+@CrossOrigin("*")
 public class Geral {
 
     @Autowired
@@ -47,7 +49,7 @@ public class Geral {
         cliente.setNome(clienteDTO.getNome());
         clienteServico.cadastrarCliente(cliente);
 
-        List<Endereco> enderecos = clienteDTO.getEnderecos().stream().map(dto -> {
+        Set<Endereco> enderecos = clienteDTO.getEnderecos().stream().map(dto -> {
             Endereco endereco = new Endereco();
             endereco.setRua(dto.getRua());
             endereco.setBairro(dto.getBairro());
@@ -55,15 +57,15 @@ public class Geral {
             endereco.setCliente(cliente);
             enderecoServico.cadastrarEndereco(endereco);
             return endereco;
-        }).toList();
+        }).collect(Collectors.toSet());
 
-        List<Telefone> telefones = clienteDTO.getTelefones().stream().map(dto -> {
+        Set<Telefone> telefones = clienteDTO.getTelefones().stream().map(dto -> {
             Telefone telefone = new Telefone();
             telefone.setNumero(dto.getNumero());
             telefone.setCliente(cliente);
             telefoneServico.cadastrarTelefone(telefone);
             return telefone;
-        }).toList();
+        }).collect(Collectors.toSet());
 
         cliente.setEnderecos(enderecos);
         cliente.setTelefones(telefones);
@@ -85,7 +87,8 @@ public class Geral {
         Set<List<?>> resultados = new LinkedHashSet<>();
         resultados.add(clientes);
         resultados.add(enderecos);
-        return ResponseEntity.ok().body(resultados);
-
+        if(clientes.isEmpty() && enderecos.isEmpty()){
+            return ResponseEntity.noContent().build();
+        } else return ResponseEntity.ok().body(resultados);
     }
 }

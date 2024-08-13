@@ -49,8 +49,18 @@ public class ClienteServico {
 
     public Cliente adicionarEndereco(Long clienteId, Endereco endereco) {
         Cliente cliente = clienteRepositorio.getReferenceById(clienteId);
-                //.orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com id " + clienteId));
+        //.orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com id " + clienteId));
         cliente.adicionarEndereco(endereco);
         return clienteRepositorio.save(cliente);
+
     }
+
+    public Cliente buscarClienteComAtributos(Long id){
+        return clienteRepositorio.findByIdWithEnderecosAndTelefones(id);
+    }
+
+    public List<Cliente> clientesComAtributos() {
+        return clienteRepositorio.buscarClientesComAtributos();
+    }
+
 }

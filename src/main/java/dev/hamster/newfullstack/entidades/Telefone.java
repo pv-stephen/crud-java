@@ -16,6 +16,7 @@ public class Telefone implements Serializable {
     private Long id;
     private String numero;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;

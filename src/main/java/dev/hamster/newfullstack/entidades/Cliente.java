@@ -16,13 +16,12 @@ public class Cliente implements Serializable {
     @NotNull
     private String nome;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "cliente")
-    private List<Endereco> enderecos = new ArrayList<>();
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
+    private Set<Endereco> enderecos = new HashSet<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "cliente")
-    private List<Telefone> telefones = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
+    private Set<Telefone> telefones = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "cliente")
@@ -51,19 +50,19 @@ public class Cliente implements Serializable {
         this.nome = nome;
     }
 
-    public List<Telefone> getTelefones() {
+    public Set<Telefone> getTelefones() {
         return telefones;
     }
 
-    public List<Endereco> getEnderecos() {
+    public Set<Endereco> getEnderecos() {
         return enderecos;
     }
 
-    public void setTelefones(List<Telefone> telefones) {
+    public void setTelefones(Set<Telefone> telefones) {
         this.telefones = telefones;
     }
 
-    public void setEnderecos(List<Endereco> enderecos) {
+    public void setEnderecos(Set<Endereco> enderecos) {
         this.enderecos = enderecos;
     }
 

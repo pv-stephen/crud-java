@@ -18,6 +18,7 @@ public class Endereco implements Serializable {
 
     private String bairro;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
