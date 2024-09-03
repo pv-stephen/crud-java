@@ -2,12 +2,9 @@ package dev.hamster.newfullstack.controller;
 
 import dev.hamster.newfullstack.dto.ClienteDTO;
 import dev.hamster.newfullstack.dto.EnderecoDTO;
-import dev.hamster.newfullstack.dto.TelefoneDTO;
 import dev.hamster.newfullstack.entidades.Cliente;
 import dev.hamster.newfullstack.entidades.Endereco;
 import dev.hamster.newfullstack.entidades.Telefone;
-import dev.hamster.newfullstack.entidades.excecao.Mensagem;
-import dev.hamster.newfullstack.entidades.excecao.ResourceNotFoundException;
 import dev.hamster.newfullstack.repositorio.ClienteRepositorio;
 import dev.hamster.newfullstack.repositorio.EnderecoRepositorio;
 import dev.hamster.newfullstack.servico.ClienteServico;
@@ -18,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.beans.Transient;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,44 +36,11 @@ public class Geral {
 
     @Autowired
     private TelefoneServico telefoneServico;
-    @Autowired
-    private Mensagem mensagem;
-
-
-    @PostMapping()
-    public ResponseEntity<Cliente> criarCliente(@RequestBody ClienteDTO clienteDTO){
-        Cliente cliente = new Cliente();
-
-        cliente.setNome(clienteDTO.getNome());
-        clienteServico.cadastrarCliente(cliente);
-
-        Set<Endereco> enderecos = clienteDTO.getEnderecos().stream().map(dto -> {
-            Endereco endereco = new Endereco();
-            endereco.setRua(dto.getRua());
-            endereco.setBairro(dto.getBairro());
-            endereco.setComplemento(dto.getComplemento());
-            endereco.setCliente(cliente);
-            enderecoServico.cadastrarEndereco(endereco);
-            return endereco;
-        }).collect(Collectors.toSet());
-
-        Set<Telefone> telefones = clienteDTO.getTelefones().stream().map(dto -> {
-            Telefone telefone = new Telefone();
-            telefone.setNumero(dto.getNumero());
-            telefone.setCliente(cliente);
-            telefoneServico.cadastrarTelefone(telefone);
-            return telefone;
-        }).collect(Collectors.toSet());
-
-        cliente.setEnderecos(enderecos);
-        cliente.setTelefones(telefones);
-        return ResponseEntity.status(HttpStatus.CREATED).body(cliente);
-    }
 
     @GetMapping
-    public ResponseEntity<?> pesquisar(@RequestParam String termo){
+    public ResponseEntity<?> pesquisar(@RequestParam String termo) {
         // verifica se o parametro nao está vazio:
-        if(termo.isBlank() || termo.isEmpty()){
+        if (termo.isBlank() || termo.isEmpty()) {
             return ResponseEntity.badRequest().body("O parametro de consulta não pode estar vazio");
         }
 
@@ -87,8 +52,52 @@ public class Geral {
         Set<List<?>> resultados = new LinkedHashSet<>();
         resultados.add(clientes);
         resultados.add(enderecos);
-        if(clientes.isEmpty() && enderecos.isEmpty()){
+        if (clientes.isEmpty() && enderecos.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else return ResponseEntity.ok().body(resultados);
+    }
+
+
+    @PostMapping
+    public ResponseEntity<?> cadastrar(@RequestBody Cliente obj) {
+
+        Cliente cliente = new Cliente();
+        cliente.setNome(obj.getNome());
+
+        ResponseEntity<?> clienteResponse = clienteServico.cadastrarCliente(cliente);
+        if(!clienteResponse.getStatusCode().equals(HttpStatus.CREATED)){
+            return ResponseEntity.badRequest().body("O nome do Cliente deve ser preenchido");
+        }
+
+        for (Endereco endereco : obj.getEnderecos()) {
+            Endereco novoEndereco = new Endereco();
+            novoEndereco.setRua(endereco.getRua());
+            novoEndereco.setBairro(endereco.getBairro());
+            novoEndereco.setComplemento(endereco.getComplemento());
+            novoEndereco.setCliente(cliente);
+
+            ResponseEntity<?> enderecoResponse = enderecoServico.cadastrarEndereco(novoEndereco);
+            if (!enderecoResponse.getStatusCode().equals(HttpStatus.CREATED)) {
+                return enderecoResponse;
+            }
+
+            cliente.adicionarEndereco(novoEndereco);
+        }
+
+        for (Telefone telefone : obj.getTelefones()) {
+            Telefone novoTelefone = new Telefone();
+            novoTelefone.setNumero(telefone.getNumero());
+            novoTelefone.setCliente(cliente);
+
+            ResponseEntity<?> telefoneResponse = telefoneServico.cadastrarTelefone(novoTelefone);
+            if (!telefoneResponse.getStatusCode().equals(HttpStatus.CREATED)) {
+                return telefoneResponse;
+            }
+
+            cliente.adicionarTelefone(novoTelefone);
+        }
+
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(cliente);
     }
 }

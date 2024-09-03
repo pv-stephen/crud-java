@@ -1,45 +1,42 @@
 package dev.hamster.newfullstack.entidades;
 
+import dev.hamster.newfullstack.entidades.enums.Categoria;
 import jakarta.persistence.*;
 
-import java.util.Objects;
+import java.io.Serializable;
 
 @Entity(name="itens")
 @Table(name="itens")
-public class Itens {
+public class Itens implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long ID;
     private String descricao;
     private Integer quantidade;
     private Double preco;
-
-    @ManyToOne(cascade=CascadeType.PERSIST)
-    @JoinColumn(name = "categoria_id")
     private Categoria categoria;
-
-    @ManyToOne(cascade=CascadeType.PERSIST)
-    @JoinColumn(name = "orcamento_id")
+    @ManyToOne
+    @JoinColumn(name="orcamento_id")
     private Orcamento orcamento;
 
+    public Itens() {}
 
-    public Itens(){}
-
-    public Itens(Long id, String descricao, Integer quantidade, Double preco, Categoria categoria) {
-        this.id = id;
+    public Itens(Long ID, String descricao, Integer quantidade, Double preco, Categoria categoria, Orcamento orcamento) {
+        this.ID = ID;
         this.descricao = descricao;
         this.quantidade = quantidade;
         this.preco = preco;
         this.categoria = categoria;
+        this.orcamento = orcamento;
     }
 
-    public Long getId() {
-        return id;
+    public Long getID() {
+        return ID;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setID(Long ID) {
+        this.ID = ID;
     }
 
     public String getDescricao() {
@@ -82,22 +79,7 @@ public class Itens {
         this.orcamento = orcamento;
     }
 
-    // Métodos
-    public Double getSubtotal(){
-        return getPreco() * getQuantidade();
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Itens itens = (Itens) o;
-        return Objects.equals(id, itens.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public double getSubtotal() {
+        return getPreco()*getQuantidade();
     }
 }

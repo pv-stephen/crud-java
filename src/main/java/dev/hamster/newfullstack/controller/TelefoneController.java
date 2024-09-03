@@ -12,9 +12,7 @@ import java.util.List;
 @CrossOrigin("*")
 public class TelefoneController {
 
-
     @Autowired private TelefoneServico telefoneServico;
-
 
     @GetMapping()
     public ResponseEntity<List<Telefone>> findAll(){

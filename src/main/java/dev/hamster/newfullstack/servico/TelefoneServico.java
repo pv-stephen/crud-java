@@ -40,7 +40,7 @@ public class TelefoneServico {
     }
 
     public ResponseEntity<?> remover(Long id){
-        if(telefoneRepositorio.countById(id) == 0){
+        if(telefoneRepositorio.countByID(id) == 0){
             mensagem.setMensagem("Telefone não encontrado");
             return new ResponseEntity<>(mensagem, HttpStatus.NOT_FOUND);
         } else telefoneRepositorio.deleteById(id);

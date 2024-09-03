@@ -24,14 +24,6 @@ public class EnderecoServico {
         return new ResponseEntity<>(enderecos, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> selecionarPeloCodigo(Long id){
-        if(enderecoRepositorio.countById(id) == 0){
-            mensagem.setMensagem("Endereço não encontrado.");
-            return new ResponseEntity<>(mensagem, HttpStatus.NOT_FOUND);
-        }
-        else return new ResponseEntity<>(enderecoRepositorio.findById(id), HttpStatus.OK);
-    }
-
     public ResponseEntity<?> cadastrarEndereco(Endereco obj){
         if(obj.getRua().isBlank() || obj.getRua().isEmpty()){
             mensagem.setMensagem("O campo Rua é obrigatório!");
@@ -69,7 +61,7 @@ public class EnderecoServico {
     }
 
     public ResponseEntity<?> remover(Long id){
-        if(enderecoRepositorio.countById(id) == 0){
+        if(enderecoRepositorio.countByID(id) == 0){
             mensagem.setMensagem("Endereço não encontrado");
             return new ResponseEntity<>(mensagem, HttpStatus.NOT_FOUND);
         } else enderecoRepositorio.deleteById(id);

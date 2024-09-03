@@ -12,7 +12,7 @@ public class TelefoneDTO implements Serializable {
     public TelefoneDTO() {
     }
     public TelefoneDTO(Telefone telefone) {
-        id = telefone.getId();
+        id = telefone.getID();
         numero = telefone.getNumero();
     }
 

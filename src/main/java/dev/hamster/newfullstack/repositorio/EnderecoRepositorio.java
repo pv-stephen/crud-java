@@ -18,5 +18,5 @@ public interface EnderecoRepositorio extends JpaRepository<Endereco, Long> {
     @Query("SELECT e FROM enderecos e WHERE LOWER(e.rua) LIKE %:termo% AND LOWER(e.bairro) LIKE %:termo% ORDER BY e.rua ASC")
     List<Endereco> buscarPorRua(String termo);
 
-    Long countById(Long id);
+    Long countByID(Long id);
 }

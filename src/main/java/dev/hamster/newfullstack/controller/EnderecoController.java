@@ -36,9 +36,5 @@ public class EnderecoController {
         return enderecoServico.remover(id);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> selecionarPeloId(@PathVariable Long id){
-        return enderecoServico.selecionarPeloCodigo(id);
-    }
 
 }

@@ -11,6 +11,6 @@ public interface ItensRepositorio extends CrudRepository<Itens,Long> {
 
     List<Itens> findAll();
     Optional<Itens> findById(Long id);
-    Long countById(Long id);
+    Long countByID(Long id);
 
 }

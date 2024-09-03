@@ -1,8 +1,8 @@
 package dev.hamster.newfullstack.entidades;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -12,33 +12,30 @@ public class Endereco implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long ID;
     private String rua;
-    private String complemento;
-
     private String bairro;
-
-    @JsonIgnore
+    private String complemento;
     @ManyToOne
     @JoinColumn(name = "cliente_id")
+    @JsonIgnore
     private Cliente cliente;
 
     public Endereco() {}
-
-    public Endereco(Long id, String rua, String complemento, String bairro, Cliente cliente){
-        this.id = id;
+    public Endereco(Long ID, String rua, String bairro, String complemento, Cliente cliente) {
+        this.ID = ID;
         this.rua = rua;
-        this.complemento = complemento;
         this.bairro = bairro;
+        this.complemento = complemento;
         this.cliente = cliente;
     }
 
-    public Long getId() {
-        return id;
+    public Long getID() {
+        return ID;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setID(Long ID) {
+        this.ID = ID;
     }
 
     public String getRua() {
@@ -49,20 +46,20 @@ public class Endereco implements Serializable {
         this.rua = rua;
     }
 
-    public String getComplemento() {
-        return complemento;
-    }
-
-    public void setComplemento(String complemento) {
-        this.complemento = complemento;
-    }
-
     public String getBairro() {
         return bairro;
     }
 
     public void setBairro(String bairro) {
         this.bairro = bairro;
+    }
+
+    public String getComplemento() {
+        return complemento;
+    }
+
+    public void setComplemento(String complemento) {
+        this.complemento = complemento;
     }
 
     public Cliente getCliente() {
@@ -78,11 +75,11 @@ public class Endereco implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Endereco endereco = (Endereco) o;
-        return Objects.equals(id, endereco.id);
+        return Objects.equals(ID, endereco.ID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(ID);
     }
 }

@@ -13,7 +13,7 @@ public class EnderecoDTO implements Serializable {
 
     public EnderecoDTO(){}
     public EnderecoDTO(Endereco endereco){
-        id = endereco.getId();
+        id = endereco.getID();
         rua = endereco.getRua();
         bairro = endereco.getBairro();
         complemento = endereco.getComplemento();

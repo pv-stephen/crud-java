@@ -1,6 +1,5 @@
 package dev.hamster.newfullstack.entidades;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -13,7 +12,7 @@ public class Telefone implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long ID;
     private String numero;
 
     @JsonIgnore
@@ -21,20 +20,20 @@ public class Telefone implements Serializable {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-
     public Telefone(){}
-    public Telefone(Long id, String numero, Cliente cliente){
-        this.id = id;
+
+    public Telefone(Long ID, String numero, Cliente cliente) {
+        this.ID = ID;
         this.numero = numero;
         this.cliente = cliente;
     }
 
-    public Long getId() {
-        return id;
+    public Long getID() {
+        return ID;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setID(Long ID) {
+        this.ID = ID;
     }
 
     public String getNumero() {
@@ -58,11 +57,11 @@ public class Telefone implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Telefone telefone = (Telefone) o;
-        return Objects.equals(id, telefone.id) && Objects.equals(numero, telefone.numero);
+        return Objects.equals(ID, telefone.ID) && Objects.equals(numero, telefone.numero);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, numero);
+        return Objects.hash(ID, numero);
     }
 }

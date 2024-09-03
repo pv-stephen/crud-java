@@ -1,10 +1,11 @@
 package dev.hamster.newfullstack.entidades;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity(name="clientes")
 @Table(name="clientes")
@@ -12,34 +13,27 @@ public class Cliente implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @NotNull
+    private Long ID;
     private String nome;
 
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cliente")
+    private Set<Telefone> telefones = new HashSet<>();
+    @OneToMany(mappedBy = "cliente")
     private Set<Endereco> enderecos = new HashSet<>();
 
+    public Cliente() {}
 
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
-    private Set<Telefone> telefones = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "cliente")
-    private List<Orcamento> orcamentos = new ArrayList<>();
-
-
-    public Cliente(){}
-    public Cliente(Long id, String nome) {
-        this.id = id;
+    public Cliente(Long ID, String nome) {
+        this.ID = ID;
         this.nome = nome;
     }
 
-    public Long getId() {
-        return id;
+    public Long getID() {
+        return ID;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setID(Long ID) {
+        this.ID = ID;
     }
 
     public String getNome() {
@@ -58,28 +52,15 @@ public class Cliente implements Serializable {
         return enderecos;
     }
 
-    public void setTelefones(Set<Telefone> telefones) {
-        this.telefones = telefones;
+
+    public void adicionarTelefone(Telefone telefone){
+        telefone.setCliente(this);
+        telefones.add(telefone);
     }
 
-    public void setEnderecos(Set<Endereco> enderecos) {
-        this.enderecos = enderecos;
-    }
-
-    public List<Orcamento> getOrcamentos() {
-        return orcamentos;
-    }
-
-
-
-    public void adicionarTelefone(Telefone telefone) {
-        this.telefones.add(telefone);
-    }
-    public void adicionarEndereco(Endereco endereco) {
-        this.enderecos.add(endereco);
-    }
-    public void adicionarOrcamento(Orcamento orcamento) {
-        this.orcamentos.add(orcamento);
+    public void adicionarEndereco(Endereco endereco){
+        endereco.setCliente(this);
+        enderecos.add(endereco);
     }
 
     @Override
@@ -87,11 +68,11 @@ public class Cliente implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cliente cliente = (Cliente) o;
-        return Objects.equals(id, cliente.id);
+        return Objects.equals(ID, cliente.ID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(ID);
     }
 }

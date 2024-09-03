@@ -1,15 +1,14 @@
 package dev.hamster.newfullstack.entidades;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity(name = "orcamentos")
 @Table(name = "orcamentos")
@@ -17,44 +16,40 @@ public class Orcamento implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private Long ID;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate dataPedido;
+    private LocalDate data;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @JoinColumn(name="cliente_id")
     private Cliente cliente;
 
     @OneToMany(mappedBy = "orcamento")
-    @JsonIgnore
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<Itens> itens = new ArrayList<>();
+    private Set<Itens> itens = new HashSet<>();
 
+    public Orcamento(){}
 
-    public Orcamento() {}
-
-    public Orcamento(Long id, LocalDate dataPedido, Cliente cliente) {
-        this.id = id;
-        this.dataPedido = dataPedido;
+    public Orcamento(Long ID, LocalDate data, Cliente cliente) {
+        this.ID = ID;
+        this.data = data;
         this.cliente = cliente;
-
     }
 
-    public Long getId() {
-        return id;
+    public Long getID() {
+        return ID;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setID(Long ID) {
+        this.ID = ID;
     }
 
-    public LocalDate getDataPedido() {
-        return dataPedido;
+    public LocalDate getData() {
+        return data;
     }
 
-    public void setDataPedido(LocalDate dataPedido) {
-        this.dataPedido = dataPedido;
+    public void setData(LocalDate data) {
+        this.data = data;
     }
 
     public Cliente getCliente() {
@@ -65,12 +60,8 @@ public class Orcamento implements Serializable {
         this.cliente = cliente;
     }
 
-    public List<Itens> getItens() {
+    public Set<Itens> getItens() {
         return itens;
-    }
-
-    public void adicioanarItens(Itens item){
-        itens.add(item);
     }
 
     // Métodos
@@ -83,17 +74,16 @@ public class Orcamento implements Serializable {
         return soma;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Orcamento orcamento = (Orcamento) o;
-        return Objects.equals(id, orcamento.id);
+        return Objects.equals(ID, orcamento.ID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(ID);
     }
 }

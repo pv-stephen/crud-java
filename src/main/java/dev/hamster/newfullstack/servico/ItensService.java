@@ -23,11 +23,11 @@ public class ItensService {
     }
 
     public ResponseEntity<?> findById(Long id){
-        if (itensRepositorio.countById(id) == 0) {
+        if (itensRepositorio.countByID(id) == 0) {
             mensagem.setMensagem("Não foi encontrada nenhum item!");
             return new ResponseEntity<>(mensagem, HttpStatus.NOT_FOUND);
         } else{
-            return new ResponseEntity<>(itensRepositorio.countById(id),HttpStatus.OK);
+            return new ResponseEntity<>(itensRepositorio.countByID(id),HttpStatus.OK);
         }
     }
 
@@ -50,7 +50,7 @@ public class ItensService {
     }
 
     public ResponseEntity<?> editar(Itens obj){
-        if(itensRepositorio.countById(obj.getId()) == 0){
+        if(itensRepositorio.countByID(obj.getID()) == 0){
             mensagem.setMensagem("Este código não existe!");
             return new ResponseEntity<>(mensagem, HttpStatus.NOT_FOUND);
         } else if(obj.getDescricao().isBlank()){
@@ -72,7 +72,7 @@ public class ItensService {
 
 
     public ResponseEntity<?> remover(Long id){
-        if(itensRepositorio.countById(id) == 0){
+        if(itensRepositorio.countByID(id) == 0){
             mensagem.setMensagem("O codigo informado não existe");
             return new ResponseEntity<>(mensagem, HttpStatus.NOT_FOUND);
         } else {
