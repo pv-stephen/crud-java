@@ -20,7 +20,17 @@ public class ClienteServico {
 
     public ResponseEntity<List<Cliente>> buscarTodos(){
         List<Cliente> clientes = clienteRepositorio.buscarTodos();
-        return ResponseEntity.ok(clientes);
+        if(clientes.isEmpty()){
+            return ResponseEntity.noContent().build();
+        } else return ResponseEntity.ok(clientes);
+    }
+
+    public ResponseEntity<List<Cliente>> clientesComAtributos() {
+        List<Cliente> clientes = clienteRepositorio.buscarClientesComAtributos();
+        if(clientes.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        else return ResponseEntity.ok(clientes);
     }
 
     public ResponseEntity<?> cadastrarCliente(Cliente obj){
@@ -35,10 +45,6 @@ public class ClienteServico {
             mensagem.setMensagem("O nome do cliente é orbigátorio!");
             return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
         } else return new ResponseEntity<>(clienteRepositorio.save(obj), HttpStatus.OK);
-    }
-
-    public List<Cliente> clientesComAtributos() {
-        return clienteRepositorio.buscarClientesComAtributos();
     }
 
 }

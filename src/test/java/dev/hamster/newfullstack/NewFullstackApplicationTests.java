@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class NewFullstackApplicationTests {
 
     @Test
-    void contextLoads() {
+    void main() {
+        NewFullstackApplication.main(new String[] {});
     }
 
 }

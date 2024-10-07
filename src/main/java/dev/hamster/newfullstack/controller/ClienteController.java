@@ -15,7 +15,7 @@ public class ClienteController {
     @Autowired private ClienteServico clienteServico;
 
     @GetMapping
-    public List<Cliente> todosClientesComAtributos() {
+    public ResponseEntity<List<Cliente>> todosClientesComAtributos() {
         return clienteServico.clientesComAtributos();
     }
 
