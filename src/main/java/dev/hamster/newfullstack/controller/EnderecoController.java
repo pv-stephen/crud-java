@@ -32,8 +32,8 @@ public class EnderecoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> excluir(@PathVariable Long id){
-        return enderecoServico.remover(id);
+    public void excluir(@PathVariable Long id){
+         enderecoServico.remover(id);
     }
 
 

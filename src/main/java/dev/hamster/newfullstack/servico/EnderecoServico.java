@@ -1,7 +1,10 @@
 package dev.hamster.newfullstack.servico;
 
 import dev.hamster.newfullstack.entidades.Endereco;
+import dev.hamster.newfullstack.entidades.excecao.ExcecaoCampoObrigatorio;
+import dev.hamster.newfullstack.entidades.excecao.GlobalExceptionHandler;
 import dev.hamster.newfullstack.entidades.excecao.Mensagem;
+import dev.hamster.newfullstack.entidades.excecao.ResourceNotFoundException;
 import dev.hamster.newfullstack.repositorio.EnderecoRepositorio;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,26 +50,37 @@ public class EnderecoServico {
         return new ResponseEntity<>(enderecoRepositorio.save(obj), HttpStatus.CREATED);
 
     }
-    public ResponseEntity<?> editarEndereco (Endereco obj){
-        if(obj.getRua().isBlank() || obj.getRua().isEmpty()){
-            mensagem.setMensagem("O campo Rua é obrigatório!");
-            return new ResponseEntity<>(mensagem,HttpStatus.BAD_REQUEST);
-        }if(obj.getBairro().isBlank() || obj.getBairro().isEmpty()){
-            mensagem.setMensagem("O campo Bairro é obrigatório!");
-            return new ResponseEntity<>(mensagem,HttpStatus.BAD_REQUEST);
-        }if(obj.getComplemento().isBlank() || obj.getComplemento().isEmpty()){
-            mensagem.setMensagem("O campo Complemento é obrigatório!");
-            return new ResponseEntity<>(mensagem,HttpStatus.BAD_REQUEST);
-        } else return new ResponseEntity<>(enderecoRepositorio.save(obj), HttpStatus.CREATED);
+    public ResponseEntity<?> editarEndereco(Endereco obj){
+        if(obj.getRua().isEmpty() || obj.getRua().isBlank()){
+            throw new ExcecaoCampoObrigatorio("O campo Rua é obrigatório!");
+        }
+        if (obj.getBairro().isBlank() || obj.getBairro().isEmpty()) {
+            throw new ExcecaoCampoObrigatorio("O campo Bairro é obrigatório!");
+        }
+        if (obj.getComplemento().isBlank() || obj.getComplemento().isEmpty()) {
+            throw new ExcecaoCampoObrigatorio("O campo Complemento é obrigatório!");
+        }
+        else {
+            enderecoRepositorio.save(obj);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
     }
+
+//    public ResponseEntity<?> remover(Long id){
+//        if(enderecoRepositorio.countByID(id) == 0){
+//            mensagem.setMensagem("Endereço não encontrado");
+//            return new ResponseEntity<>(mensagem, HttpStatus.NOT_FOUND);
+//        } else enderecoRepositorio.deleteById(id);
+//        mensagem.setMensagem("Endereço excluído com sucesso!");
+//        return new ResponseEntity<>(mensagem, HttpStatus.OK);
+//    }
 
     public ResponseEntity<?> remover(Long id){
         if(enderecoRepositorio.countByID(id) == 0){
-            mensagem.setMensagem("Endereço não encontrado");
-            return new ResponseEntity<>(mensagem, HttpStatus.NOT_FOUND);
-        } else enderecoRepositorio.deleteById(id);
-        mensagem.setMensagem("Endereço excluído com sucesso!");
-        return new ResponseEntity<>(mensagem, HttpStatus.OK);
+            throw new ResourceNotFoundException("Objeto não encontrado. ID = " + id);
+        }
+        enderecoRepositorio.deleteById(id);
+        return new ResponseEntity<>("Endereço deletado com sucesso!",HttpStatus.OK);
     }
 
 }

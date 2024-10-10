@@ -1,6 +1,8 @@
 package dev.hamster.newfullstack.servico;
 
 import dev.hamster.newfullstack.entidades.Cliente;
+import dev.hamster.newfullstack.entidades.excecao.ExcecaoCampoObrigatorio;
+import dev.hamster.newfullstack.entidades.excecao.GlobalExceptionHandler;
 import dev.hamster.newfullstack.entidades.excecao.Mensagem;
 import dev.hamster.newfullstack.repositorio.ClienteRepositorio;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,24 +57,59 @@ class ClienteServicoTest {
     }
 
     @Test
-    void seClienteNomeIsEmpty_RetornaBadRequest(){
-        ResponseEntity<?> statusResposta = clienteServico.cadastrarCliente(clienteNomeIsEmpty);
-        assertEquals(HttpStatus.BAD_REQUEST, statusResposta.getStatusCode());
+    void quandoEditarCliente_RetornaStatusOKD() {
+        ResponseEntity<?> statusResposta = clienteServico.editarCliente(cliente);
+        assertEquals(HttpStatus.OK, statusResposta.getStatusCode());
+        assertNotEquals(HttpStatus.CREATED, statusResposta.getStatusCode());
+    }
+    @Test
+    void seCadastrarCliente_NomeClienteIsEmpty_EntaoRetorna_BadRequest(){
+        ExcecaoCampoObrigatorio excecaoNomeIsEmpty = assertThrows(ExcecaoCampoObrigatorio.class,
+                () -> clienteServico.cadastrarCliente(clienteNomeIsEmpty), "O NOME do Cliente é obrigatório!");
+
+        assertEquals("O NOME do Cliente é obrigatório!", excecaoNomeIsEmpty.getMessage());
+
+        GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
+        ResponseEntity<String> status = globalExceptionHandler.campoObrigatorioExcepiton(excecaoNomeIsEmpty);
+        assertEquals(HttpStatus.BAD_REQUEST, status.getStatusCode());
     }
 
     @Test
-    void seClienteNomeIsBlank_RetornaBadRequest(){
-        ResponseEntity<?> statusResposta = clienteServico.cadastrarCliente(clienteNomeIsBlank);
-        assertEquals(HttpStatus.BAD_REQUEST, statusResposta.getStatusCode());
+    void seCadastrar_ClienteNomeIsBlank_RetornaBadRequest(){
+
+        ExcecaoCampoObrigatorio excecaoNomeIsBlank = assertThrows(ExcecaoCampoObrigatorio.class,
+                ()-> clienteServico.cadastrarCliente(clienteNomeIsBlank), "O NOME do Cliente é obrigatório!");
+
+
+        assertEquals("O NOME do Cliente é obrigatório!", excecaoNomeIsBlank.getMessage());
+
+        GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
+        ResponseEntity<String> status = globalExceptionHandler.campoObrigatorioExcepiton(excecaoNomeIsBlank);
+
+        assertEquals(HttpStatus.BAD_REQUEST, status.getStatusCode());
     }
 
     @Test
     void quandoEditarClienteNomeIsBlank_ou_ClienteNomeIsEmpty_RetornaBadRequest() {
-        ResponseEntity<?> statusClienteNomeIsBlank = clienteServico.editarCliente(clienteNomeIsBlank);
-        ResponseEntity<?> statusClienteNomeIsEmpty = clienteServico.editarCliente(clienteNomeIsEmpty);
+        ExcecaoCampoObrigatorio excecaoNomeIsBlank = assertThrows(ExcecaoCampoObrigatorio.class,
+                ()-> clienteServico.cadastrarCliente(clienteNomeIsBlank), "O NOME do Cliente é obrigatório!");
 
-        assertEquals(HttpStatus.BAD_REQUEST, statusClienteNomeIsBlank.getStatusCode());
-        assertEquals(HttpStatus.BAD_REQUEST, statusClienteNomeIsEmpty.getStatusCode());
+        ExcecaoCampoObrigatorio excecaoNomeIsEmpty = assertThrows(ExcecaoCampoObrigatorio.class,
+                ()-> clienteServico.cadastrarCliente(clienteNomeIsEmpty), "O NOME do Cliente é obrigatório!");
+
+        assertEquals("O NOME do Cliente é obrigatório!", excecaoNomeIsBlank.getMessage());
+        assertEquals("O NOME do Cliente é obrigatório!", excecaoNomeIsEmpty.getMessage());
+
+        GlobalExceptionHandler globalExceptionHandlerNomeIsEmpty = new GlobalExceptionHandler();
+        ResponseEntity<String> statusNomeIsEmpty = globalExceptionHandlerNomeIsEmpty.campoObrigatorioExcepiton(excecaoNomeIsBlank);
+
+        assertEquals(HttpStatus.BAD_REQUEST, statusNomeIsEmpty.getStatusCode());
+
+        GlobalExceptionHandler globalExceptionHandlerNomeIsBlank = new GlobalExceptionHandler();
+        ResponseEntity<String> statusNomeIsBlank = globalExceptionHandlerNomeIsBlank.campoObrigatorioExcepiton(excecaoNomeIsBlank);
+
+        assertEquals(HttpStatus.BAD_REQUEST, statusNomeIsBlank.getStatusCode());
+
     }
 
 

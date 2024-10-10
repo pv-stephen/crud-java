@@ -1,6 +1,7 @@
 package dev.hamster.newfullstack.servico;
 
 import dev.hamster.newfullstack.entidades.Cliente;
+import dev.hamster.newfullstack.entidades.excecao.ExcecaoCampoObrigatorio;
 import dev.hamster.newfullstack.entidades.excecao.Mensagem;
 import dev.hamster.newfullstack.repositorio.ClienteRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,15 +36,13 @@ public class ClienteServico {
 
     public ResponseEntity<?> cadastrarCliente(Cliente obj){
         if(obj.getNome().isEmpty() || obj.getNome().isBlank()){
-            mensagem.setMensagem("O nome do cliente é orbigátorio!");
-            return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
+            throw new ExcecaoCampoObrigatorio("O NOME do Cliente é obrigatório!");
         } else return new ResponseEntity<>(clienteRepositorio.save(obj), HttpStatus.CREATED);
     }
 
     public ResponseEntity<?> editarCliente(Cliente obj){
         if(obj.getNome().isEmpty() || obj.getNome().isBlank()){
-            mensagem.setMensagem("O nome do cliente é orbigátorio!");
-            return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
+            throw new ExcecaoCampoObrigatorio("O NOME do Cliente é obrigatório!");
         } else return new ResponseEntity<>(clienteRepositorio.save(obj), HttpStatus.OK);
     }
 
