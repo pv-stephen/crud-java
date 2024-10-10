@@ -28,26 +28,20 @@ public class EnderecoServico {
     }
 
     public ResponseEntity<?> cadastrarEndereco(Endereco obj){
-        if(obj.getRua().isBlank() || obj.getRua().isEmpty()){
-            mensagem.setMensagem("O campo Rua é obrigatório!");
-            return new ResponseEntity<>(mensagem,HttpStatus.BAD_REQUEST);
-        }if(obj.getBairro().isBlank() || obj.getBairro().isEmpty()){
-            mensagem.setMensagem("O campo Bairro é obrigatório!");
-            return new ResponseEntity<>(mensagem,HttpStatus.BAD_REQUEST);
-        }if(obj.getComplemento().isBlank() || obj.getComplemento().isEmpty()) {
-            mensagem.setMensagem("O campo Complemento é obrigatório!");
-            return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
+        if(obj.getRua().isEmpty() || obj.getRua().isBlank()){
+            throw new ExcecaoCampoObrigatorio("O campo Rua é obrigatório!");
         }
-        try{
-            if (obj.getCliente() == null) {
-                mensagem.setMensagem("Um Endereco deve obrigatoriamente ter um Cliente associado!");
-                return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
-            }
-        }catch (TransientPropertyValueException transientPropertyValueException){
-            transientPropertyValueException.getMessage();
+        if (obj.getBairro().isBlank() || obj.getBairro().isEmpty()) {
+            throw new ExcecaoCampoObrigatorio("O campo Bairro é obrigatório!");
+        }
+        if (obj.getComplemento().isBlank() || obj.getComplemento().isEmpty()) {
+            throw new ExcecaoCampoObrigatorio("O campo Complemento é obrigatório!");
+        }
+        else {
+            enderecoRepositorio.save(obj);
+            return new ResponseEntity<>("Endereço cadastrado com sucesso!", HttpStatus.CREATED);
         }
 
-        return new ResponseEntity<>(enderecoRepositorio.save(obj), HttpStatus.CREATED);
 
     }
     public ResponseEntity<?> editarEndereco(Endereco obj){

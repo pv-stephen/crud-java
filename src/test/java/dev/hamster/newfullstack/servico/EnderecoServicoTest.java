@@ -47,10 +47,16 @@ class EnderecoServicoTest {
     }
 
     @Test
-    void quandoCadastrarEnderecoVazioRetornaBadRequest() {
+    void quandoCadastrarEnderecoComCampoVazio_RetornaBadRequest() {
         Cliente clienteTeste = new Cliente();
         Endereco enderecoTeste = new Endereco(1L, "","","", clienteTeste);
-        ResponseEntity<?> status = enderecoServico.cadastrarEndereco(enderecoTeste);
+
+        ExcecaoCampoObrigatorio excecao = assertThrows(ExcecaoCampoObrigatorio.class,
+                ()-> enderecoServico.cadastrarEndereco(enderecoTeste), "O campo rua é obrigatório");
+
+
+        GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
+        ResponseEntity<?> status = globalExceptionHandler.campoObrigatorioExcepiton(excecao);
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, status.getStatusCode());
     }
