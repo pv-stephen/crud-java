@@ -16,8 +16,6 @@ public class ClienteServico {
 
     @Autowired
     private ClienteRepositorio clienteRepositorio;
-    @Autowired
-    private Mensagem mensagem;
 
     public ResponseEntity<List<Cliente>> buscarTodos(){
         List<Cliente> clientes = clienteRepositorio.buscarTodos();
@@ -31,19 +29,21 @@ public class ClienteServico {
         if(clientes.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        else return ResponseEntity.ok(clientes);
+        return ResponseEntity.ok(clientes);
     }
 
     public ResponseEntity<?> cadastrarCliente(Cliente obj){
         if(obj.getNome().isEmpty() || obj.getNome().isBlank()){
             throw new ExcecaoCampoObrigatorio("O NOME do Cliente é obrigatório!");
-        } else return new ResponseEntity<>(clienteRepositorio.save(obj), HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(clienteRepositorio.save(obj), HttpStatus.CREATED);
     }
 
     public ResponseEntity<?> editarCliente(Cliente obj){
         if(obj.getNome().isEmpty() || obj.getNome().isBlank()){
             throw new ExcecaoCampoObrigatorio("O NOME do Cliente é obrigatório!");
-        } else return new ResponseEntity<>(clienteRepositorio.save(obj), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(clienteRepositorio.save(obj), HttpStatus.OK);
     }
 
 }

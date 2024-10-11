@@ -2,8 +2,11 @@ package dev.hamster.newfullstack.servico;
 
 import dev.hamster.newfullstack.entidades.Cliente;
 import dev.hamster.newfullstack.entidades.Telefone;
-import dev.hamster.newfullstack.entidades.excecao.Mensagem;
+import dev.hamster.newfullstack.entidades.excecao.ExcecaoCampoObrigatorio;
+import dev.hamster.newfullstack.entidades.excecao.GlobalExceptionHandler;
+import dev.hamster.newfullstack.entidades.excecao.ViolacaoIntegridadeBD;
 import dev.hamster.newfullstack.repositorio.TelefoneRepositorio;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -28,8 +31,6 @@ class TelefoneServicoTest {
 
     @Mock
     private TelefoneRepositorio telefoneRepositorio;
-    @Mock
-    private Mensagem mensagem;
 
     List<Telefone> telefones = new ArrayList<>();
 
@@ -37,22 +38,55 @@ class TelefoneServicoTest {
     void SetUp(){
         MockitoAnnotations.openMocks(this);
         startClass();
-    };
-
-    @Test
-    void buscarTodos() {
-        Mockito.when(telefoneServico.buscarTodos())
-                .thenReturn(new ResponseEntity<>(telefones, HttpStatus.OK));
-
-        Mockito.verify(telefones.isEmpty());
     }
 
     @Test
-    void cadastrarTelefone() {
-        Telefone telefoneTest = new Telefone(6L, " ", new Cliente());
+    void buscarTodos() {
+        Mockito.when(telefoneRepositorio.buscarTodos())
+                .thenReturn(telefones);
 
-        ResponseEntity<?> status = telefoneServico.cadastrarTelefone(telefoneTest);
-        assertEquals(HttpStatus.BAD_REQUEST, status);
+        Assertions.assertNotNull(telefones);
+    }
+
+    @Test
+    void telefoneServicoBuscarTodos() {
+        Mockito.when(telefoneRepositorio.buscarTodos())
+                .thenReturn(telefones);
+
+        ResponseEntity<List<Telefone>> response = telefoneServico.buscarTodos();
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(telefones, response.getBody());
+
+    }
+
+    @Test
+    void cadastrarTelefoneComNumeroVazio_DeveRetornarBadRequest() {
+        Telefone telefoneTest = new Telefone(6L, "", new Cliente());
+
+        ExcecaoCampoObrigatorio excecaoCampoObrigatorio = assertThrows(ExcecaoCampoObrigatorio.class,
+                () -> telefoneServico.cadastrarTelefone(telefoneTest),  "O número é obrigatório!");
+
+        GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
+        ResponseEntity<String> response = globalExceptionHandler.campoObrigatorioExcepiton(excecaoCampoObrigatorio);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    void cadastrarTelefoneClienteNulo_RetornaBadRequest(){
+        Telefone telefone = new Telefone(1L, "6291111-1111", null);
+
+        ViolacaoIntegridadeBD violacaoIntegridadeBD = assertThrows(ViolacaoIntegridadeBD.class,
+                () -> telefoneServico.cadastrarTelefone(telefone), "Um telefone deve ter um cliente associado!");
+
+        assertEquals("Um telefone deve ter um cliente associado!", violacaoIntegridadeBD.getMessage());
+
+        GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
+        ResponseEntity<String> response = globalExceptionHandler.violacaoIntegridadeBD(violacaoIntegridadeBD);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
     }
 
     @Test

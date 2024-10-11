@@ -17,4 +17,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> objetoNaoEncontradoException (ResourceNotFoundException excecao){
         return new ResponseEntity<>(excecao.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler( ViolacaoIntegridadeBD.class)
+    public ResponseEntity<String> violacaoIntegridadeBD (ViolacaoIntegridadeBD excecao){
+        return new ResponseEntity<>(excecao.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

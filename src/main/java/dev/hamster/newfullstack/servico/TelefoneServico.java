@@ -1,7 +1,9 @@
 package dev.hamster.newfullstack.servico;
 
 import dev.hamster.newfullstack.entidades.Telefone;
-import dev.hamster.newfullstack.entidades.excecao.Mensagem;
+import dev.hamster.newfullstack.entidades.excecao.ExcecaoCampoObrigatorio;
+import dev.hamster.newfullstack.entidades.excecao.ResourceNotFoundException;
+import dev.hamster.newfullstack.entidades.excecao.ViolacaoIntegridadeBD;
 import dev.hamster.newfullstack.repositorio.TelefoneRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,9 +15,7 @@ import java.util.List;
 public class TelefoneServico {
     
     @Autowired
-    private TelefoneRepositorio telefoneRepositorio;    
-    @Autowired
-    private Mensagem mensagem;
+    private TelefoneRepositorio telefoneRepositorio;
 
     public ResponseEntity<List<Telefone>> buscarTodos(){
         List<Telefone> telefones = telefoneRepositorio.buscarTodos();
@@ -24,28 +24,27 @@ public class TelefoneServico {
 
     public ResponseEntity<?> cadastrarTelefone(Telefone obj){
         if(obj.getNumero().isBlank() || obj.getNumero().isEmpty()){
-            mensagem.setMensagem("O Número é obrigatório!");
-            return new ResponseEntity<>(mensagem,HttpStatus.BAD_REQUEST);
+            throw new ExcecaoCampoObrigatorio("O número é obrigatório!");
         }
         if (obj.getCliente() == null) {
-            mensagem.setMensagem("Um telefone deve obrigatoriamente ter um Cliente associado!");
-        } return new ResponseEntity<>(telefoneRepositorio.save(obj), HttpStatus.CREATED);
+            throw new ViolacaoIntegridadeBD("Um telefone deve ter um cliente associado!");
+        }
+        return new ResponseEntity<>(telefoneRepositorio.save(obj), HttpStatus.CREATED);
     }
 
     public ResponseEntity<?> editarTelefone(Telefone obj) {
-        if (obj.getNumero().isBlank() || obj.getNumero().isEmpty()) {
-            mensagem.setMensagem("O Número é obrigatório!");
-            return new ResponseEntity<>(mensagem, HttpStatus.BAD_REQUEST);
-        } else return new ResponseEntity<>(telefoneRepositorio.save(obj), HttpStatus.OK);
+        if(obj.getNumero().isBlank() || obj.getNumero().isEmpty()){
+            throw new ExcecaoCampoObrigatorio("O número é obrigatório!");
+        }
+        return new ResponseEntity<>(telefoneRepositorio.save(obj), HttpStatus.OK);
     }
 
     public ResponseEntity<?> remover(Long id){
         if(telefoneRepositorio.countByID(id) == 0){
-            mensagem.setMensagem("Telefone não encontrado");
-            return new ResponseEntity<>(mensagem, HttpStatus.NOT_FOUND);
-        } else telefoneRepositorio.deleteById(id);
-        mensagem.setMensagem("Telefone excluído com sucesso!");
-        return new ResponseEntity<>(mensagem, HttpStatus.OK);
+            throw new ResourceNotFoundException("Objeto não encontrado. ID = " + id);
+        }
+        telefoneRepositorio.deleteById(id);
+        return new ResponseEntity<>("Endereço deletado com sucesso!",HttpStatus.OK);
     }
 
 }

@@ -44,6 +44,10 @@ class EnderecoServicoTest {
 
     @Test
     void quandoBuscarTodos_RetornaListaDeEnderecos() {
+
+        when(enderecoRepositorio.buscarTodos()).thenReturn(enderecos);
+
+        Assertions.assertNotNull(enderecos);
     }
 
     @Test

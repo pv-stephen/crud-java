@@ -18,9 +18,6 @@ public class EnderecoServico {
 
     @Autowired
     private EnderecoRepositorio enderecoRepositorio;
-    @Autowired
-    private Mensagem mensagem;
-
 
     public ResponseEntity<List<Endereco>> buscarTodos(){
         List<Endereco> enderecos = enderecoRepositorio.buscarTodos();
@@ -37,12 +34,8 @@ public class EnderecoServico {
         if (obj.getComplemento().isBlank() || obj.getComplemento().isEmpty()) {
             throw new ExcecaoCampoObrigatorio("O campo Complemento é obrigatório!");
         }
-        else {
-            enderecoRepositorio.save(obj);
-            return new ResponseEntity<>("Endereço cadastrado com sucesso!", HttpStatus.CREATED);
-        }
-
-
+        enderecoRepositorio.save(obj);
+        return new ResponseEntity<>("Endereço cadastrado com sucesso!", HttpStatus.CREATED);
     }
     public ResponseEntity<?> editarEndereco(Endereco obj){
         if(obj.getRua().isEmpty() || obj.getRua().isBlank()){
@@ -54,20 +47,10 @@ public class EnderecoServico {
         if (obj.getComplemento().isBlank() || obj.getComplemento().isEmpty()) {
             throw new ExcecaoCampoObrigatorio("O campo Complemento é obrigatório!");
         }
-        else {
-            enderecoRepositorio.save(obj);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+        enderecoRepositorio.save(obj);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    public ResponseEntity<?> remover(Long id){
-//        if(enderecoRepositorio.countByID(id) == 0){
-//            mensagem.setMensagem("Endereço não encontrado");
-//            return new ResponseEntity<>(mensagem, HttpStatus.NOT_FOUND);
-//        } else enderecoRepositorio.deleteById(id);
-//        mensagem.setMensagem("Endereço excluído com sucesso!");
-//        return new ResponseEntity<>(mensagem, HttpStatus.OK);
-//    }
 
     public ResponseEntity<?> remover(Long id){
         if(enderecoRepositorio.countByID(id) == 0){
